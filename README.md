@@ -97,7 +97,11 @@ npm install
 Create .env:
 
 PRIVATE_KEY=your_wallet_private_key
-RPC_URL=your_network_rpc_url
+ACCOUNT_ADDRESS = hex code of your account after deploying contracts, will change everytime contracts are redeployed or nodes are deleted and resetup
+LOAN_ADDRESS = hex code
+CARDS_ADDRESS = hex code
+AUDIT_ADDRESS = hex code
+
 
 3. Compile contracts
 npx hardhat compile
