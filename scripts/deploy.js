@@ -5,6 +5,13 @@ async function main() {
     const [deployer] = await hre.ethers.getSigners();
     console.log("Deploying with:", deployer.address);
 
+    // Deploy AccountRegistry (identity abstraction)
+    const AccountRegistry = await hre.ethers.getContractFactory("AccountRegistry");
+    const accountRegistry = await AccountRegistry.deploy();
+    await accountRegistry.waitForDeployment();
+    const ACCOUNT_REGISTRY_ADDRESS = await accountRegistry.getAddress();
+    console.log("AccountRegistry deployed at:", ACCOUNT_REGISTRY_ADDRESS);
+
     // Deploy Accounts
     const Accounts = await hre.ethers.getContractFactory("Accounts");
     const accounts = await Accounts.deploy();     // ❗ no arguments
@@ -43,6 +50,7 @@ async function main() {
     console.log("Contracts linked successfully!");
 
     console.log("\n=== SAVE THESE IN .env ===");
+    console.log(`ACCOUNT_REGISTRY_ADDRESS="${ACCOUNT_REGISTRY_ADDRESS}"`);
     console.log(`ACCOUNTS_ADDRESS="${ACCOUNTS_ADDRESS}"`);
     console.log(`LOANS_ADDRESS="${LOANS_ADDRESS}"`);
     console.log(`CARDS_ADDRESS="${CARDS_ADDRESS}"`);
