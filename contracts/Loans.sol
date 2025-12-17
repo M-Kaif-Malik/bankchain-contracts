@@ -41,22 +41,33 @@ contract Loans is Ownable {
     }
 
     function approveLoan(uint256 loanId) external onlyOwner {
-        loans[loanId].approved = true;
+        Loan storage L = loans[loanId];
+        require(!L.approved, "Already approved");
+
+        L.approved = true;
+
+        accountsContract.deposit{value: L.principal}(L.accountId);
+
         emit LoanApproved(loanId);
     }
 
+    /*
+    function approveLoan(uint256 loanId) external onlyOwner {
+        loans[loanId].approved = true;
+        emit LoanApproved(loanId);
+    }
+    */
+
     function repayLoan(uint256 loanId) external payable {
         Loan storage L = loans[loanId];
+
         require(L.approved, "Not approved");
         require(!L.repaid, "Already repaid");
 
         uint256 amountDue = L.principal + L.interest;
-        require(msg.value >= amountDue, "Insufficient");
+        require(msg.value == amountDue, "Wrong amount");
 
         L.repaid = true;
-
-        // deposit funds to user's account
-        accountsContract.deposit{value: msg.value}(L.accountId);
 
         emit LoanRepaid(loanId);
     }

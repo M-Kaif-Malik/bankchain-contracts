@@ -29,6 +29,7 @@ contract Accounts is Ownable, ReentrancyGuard {
     }
 
     function deposit(bytes32 id) external payable nonReentrant {
+        require(accounts[id].owner != address(0), "Account not found"); // to check if account exists
         require(!accounts[id].frozen, "Frozen");
         accounts[id].balance += msg.value;
         emit Deposit(id, msg.value);
@@ -37,6 +38,7 @@ contract Accounts is Ownable, ReentrancyGuard {
     function withdraw(bytes32 id, uint256 amount) external nonReentrant {
         Account storage acc = accounts[id];
         require(msg.sender == acc.owner, "Not owner");
+        require(accounts[id].owner != address(0), "Account not found"); // to check if account exists
         require(!acc.frozen, "Frozen");
         require(acc.balance >= amount, "Insufficient");
         acc.balance -= amount;
@@ -49,6 +51,8 @@ contract Accounts is Ownable, ReentrancyGuard {
         Account storage receiverAcc = accounts[toId];
 
         require(msg.sender == senderAcc.owner, "Not owner");
+        require(accounts[fromId].owner != address(0), "Account not found"); // to check if from_account exists
+        require(accounts[toId].owner != address(0), "Account not found"); // to check if to_account exists
         require(!senderAcc.frozen, "Frozen");
         require(!receiverAcc.frozen, "Receiver frozen");
         require(senderAcc.balance >= amount, "Insufficient");
@@ -67,4 +71,15 @@ contract Accounts is Ownable, ReentrancyGuard {
     function checkBalance(bytes32 id) external view returns (uint256) {
         return accounts[id].balance;
     }
+
+    function spend(bytes32 id, uint256 amount) external nonReentrant {
+    Account storage acc = accounts[id];
+
+    require(msg.sender == owner(), "Only system");
+    require(!acc.frozen, "Frozen");
+    require(acc.balance >= amount, "Insufficient");
+
+    acc.balance -= amount;
+}
+
 }

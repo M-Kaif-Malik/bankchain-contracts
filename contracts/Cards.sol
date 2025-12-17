@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 interface IAccounts {
     function accounts(bytes32 id) external view returns (address, uint256, bool);
     function withdraw(bytes32 id, uint256 amount) external;
+    function spend(bytes32 id, uint256 amount) external; // spend function of accounts.sol
 }
 
 contract Cards is Ownable {
@@ -45,7 +46,7 @@ contract Cards is Ownable {
     function chargeCard(uint256 cardId, uint256 amount) external onlyOwner {
         require(cards[cardId].active, "Inactive");
 
-        accountsContract.withdraw(cards[cardId].accountId, amount);
+        accountsContract.spend(cards[cardId].accountId, amount); // spend used here
 
         emit CardCharged(cardId, amount);
     }
