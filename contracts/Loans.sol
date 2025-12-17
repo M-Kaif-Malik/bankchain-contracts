@@ -40,9 +40,10 @@ contract Loans is Ownable {
         return loanCounter;
     }
 
-    function approveLoan(uint256 loanId) external onlyOwner {
+    function approveLoan(uint256 loanId) external onlyOwner payable {
         Loan storage L = loans[loanId];
         require(!L.approved, "Already approved");
+        require(msg.value == L.principal, "Principal funding required");
 
         L.approved = true;
 
