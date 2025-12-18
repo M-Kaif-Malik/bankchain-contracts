@@ -70,6 +70,9 @@ contract Loans is Ownable {
 
         L.repaid = true;
 
+        // forward ETH to system owner
+        payable(owner()).transfer(msg.value);
+
         emit LoanRepaid(loanId);
     }
 }

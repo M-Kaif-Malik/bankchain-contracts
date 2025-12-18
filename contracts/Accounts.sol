@@ -37,8 +37,8 @@ contract Accounts is Ownable, ReentrancyGuard {
 
     function withdraw(bytes32 id, uint256 amount) external nonReentrant {
         Account storage acc = accounts[id];
-        require(msg.sender == acc.owner, "Not owner");
         require(accounts[id].owner != address(0), "Account not found"); // to check if account exists
+        require(msg.sender == acc.owner, "Not owner");
         require(!acc.frozen, "Frozen");
         require(acc.balance >= amount, "Insufficient");
         acc.balance -= amount;
@@ -50,8 +50,8 @@ contract Accounts is Ownable, ReentrancyGuard {
         Account storage senderAcc = accounts[fromId];
         Account storage receiverAcc = accounts[toId];
 
-        require(msg.sender == senderAcc.owner, "Not owner");
         require(accounts[fromId].owner != address(0), "Account not found"); // to check if from_account exists
+        require(msg.sender == senderAcc.owner, "Not owner");
         require(accounts[toId].owner != address(0), "Account not found"); // to check if to_account exists
         require(!senderAcc.frozen, "Frozen");
         require(!receiverAcc.frozen, "Receiver frozen");
@@ -64,22 +64,34 @@ contract Accounts is Ownable, ReentrancyGuard {
     }
 
     function freeze(bytes32 id, bool status) external onlyOwner {
+        require(accounts[id].owner != address(0), "Account not found"); // to check if account exists
         accounts[id].frozen = status;
         emit Freeze(id, status);
     }
 
     function checkBalance(bytes32 id) external view returns (uint256) {
+        require(accounts[id].owner != address(0), "Account not found"); // to check if account exists
         return accounts[id].balance;
     }
 
     function spend(bytes32 id, uint256 amount) external nonReentrant {
     Account storage acc = accounts[id];
 
-    require(msg.sender == owner(), "Only system");
+    require(msg.sender == cardsContract, "Only cards");
     require(!acc.frozen, "Frozen");
     require(acc.balance >= amount, "Insufficient");
 
     acc.balance -= amount;
-}
+    }
+
+    address public cardsContract;
+    function setCardsContract(address _cards) external onlyOwner {
+    cardsContract = _cards;
+    }
+
+    address public loansContract;
+    function setLoansContract(address _loans) external onlyOwner {
+        loansContract = _loans;
+    }
 
 }

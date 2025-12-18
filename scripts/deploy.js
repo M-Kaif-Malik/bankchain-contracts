@@ -5,19 +5,19 @@ async function main() {
     const [deployer] = await hre.ethers.getSigners();
     console.log("Deploying with:", deployer.address);
 
-    // Deploy AccountRegistry (identity abstraction)
-    const AccountRegistry = await hre.ethers.getContractFactory("AccountRegistry");
-    const accountRegistry = await AccountRegistry.deploy();
-    await accountRegistry.waitForDeployment();
-    const ACCOUNT_REGISTRY_ADDRESS = await accountRegistry.getAddress();
-    console.log("AccountRegistry deployed at:", ACCOUNT_REGISTRY_ADDRESS);
-
     // Deploy Accounts
     const Accounts = await hre.ethers.getContractFactory("Accounts");
     const accounts = await Accounts.deploy();     // ❗ no arguments
     await accounts.waitForDeployment();
     const ACCOUNTS_ADDRESS = await accounts.getAddress();
     console.log("Accounts deployed at:", ACCOUNTS_ADDRESS);
+
+    // Deploy AccountRegistry (identity abstraction)
+    const AccountRegistry = await hre.ethers.getContractFactory("AccountRegistry");
+    const accountRegistry = await AccountRegistry.deploy();
+    await accountRegistry.waitForDeployment();
+    const ACCOUNT_REGISTRY_ADDRESS = await accountRegistry.getAddress();
+    console.log("AccountRegistry deployed at:", ACCOUNT_REGISTRY_ADDRESS);
 
     // Deploy Loans
     const Loans = await hre.ethers.getContractFactory("Loans");
@@ -46,6 +46,10 @@ async function main() {
 
     const tx2 = await cards.setAccountsContract(ACCOUNTS_ADDRESS);
     await tx2.wait();
+
+    await accounts.setCardsContract(CARDS_ADDRESS);
+    await accounts.setLoansContract(LOANS_ADDRESS);
+
 
     console.log("Contracts linked successfully!");
 
