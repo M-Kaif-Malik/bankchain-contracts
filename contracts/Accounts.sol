@@ -53,6 +53,7 @@ contract Accounts is Ownable, ReentrancyGuard {
         require(accounts[fromId].owner != address(0), "Account not found"); // to check if from_account exists
         require(msg.sender == senderAcc.owner, "Not owner");
         require(accounts[toId].owner != address(0), "Account not found"); // to check if to_account exists
+        require(fromId != toId, "Cannot transfer to same account"); // to check same account transfer
         require(!senderAcc.frozen, "Frozen");
         require(!receiverAcc.frozen, "Receiver frozen");
         require(senderAcc.balance >= amount, "Insufficient");
@@ -77,7 +78,7 @@ contract Accounts is Ownable, ReentrancyGuard {
     function spend(bytes32 id, uint256 amount) external nonReentrant {
     Account storage acc = accounts[id];
 
-    require(msg.sender == cardsContract, "Only cards");
+    require(msg.sender == cardsContract || msg.sender == loansContract, "Only cards or loans");
     require(!acc.frozen, "Frozen");
     require(acc.balance >= amount, "Insufficient");
 

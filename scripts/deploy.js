@@ -54,8 +54,8 @@ async function main() {
     console.log("Contracts linked successfully!");
 
     console.log("\n=== SAVE THESE IN .env ===");
-    console.log(`ACCOUNT_REGISTRY_ADDRESS="${ACCOUNT_REGISTRY_ADDRESS}"`);
     console.log(`ACCOUNTS_ADDRESS="${ACCOUNTS_ADDRESS}"`);
+    console.log(`ACCOUNT_REGISTRY_ADDRESS="${ACCOUNT_REGISTRY_ADDRESS}"`);
     console.log(`LOANS_ADDRESS="${LOANS_ADDRESS}"`);
     console.log(`CARDS_ADDRESS="${CARDS_ADDRESS}"`);
     console.log(`AUDIT_ADDRESS="${AUDIT_ADDRESS}"`);

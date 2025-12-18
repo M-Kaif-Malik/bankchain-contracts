@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 interface IAccounts {
     function accounts(bytes32 id) external view returns (address, uint256, bool);
     function deposit(bytes32 id) external payable;
+    function spend(bytes32 id, uint256 amount) external; // spend function of accounts.sol
 }
 
 contract Loans is Ownable {
@@ -70,8 +71,8 @@ contract Loans is Ownable {
 
         L.repaid = true;
 
-        // forward ETH to system owner
-        payable(owner()).transfer(msg.value);
+        // Deduct from account balance instead of sending ETH
+        accountsContract.spend(L.accountId, amountDue);
 
         emit LoanRepaid(loanId);
     }
