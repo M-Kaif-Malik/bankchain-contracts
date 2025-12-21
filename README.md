@@ -113,14 +113,44 @@ npx hardhat compile
 npx hardhat run scripts/deploy.js --network Bankchain
 
 📜 Usage Examples
-Create an account:
-npx hardhat run scripts/createAccount.js --network Bankchain
+# Create account (accountName, ownerAddress optional)
+npx hardhat run scripts/createAccount.js --network localhost -- accounts_test_1 0xOwnerAddress
 
-Deposit ETH:
-npx hardhat run scripts/deposit.js --network Bankchain
+# Deposit (accountName, amount in ETH)
+npx hardhat run scripts/deposit.js --network localhost -- accounts_test_1 0.01
 
-Check balance:
-npx hardhat run scripts/checkBalance.js --network Bankchain
+# Withdraw (accountName, amount in ETH)
+npx hardhat run scripts/withdraw.js --network localhost -- accounts_test_1 0.005
+
+# Check balance
+npx hardhat run scripts/checkBalance.js --network localhost -- accounts_test_1
+
+# Transfer (fromName toName amount)
+npx hardhat run scripts/transfer.js --network localhost -- accounts_test_1 accounts_test_2 0.002
+
+# Freeze/unfreeze (accountName, true|false)
+npx hardhat run scripts/freeze.js --network localhost -- accounts_test_1 true
+
+# Issue card (accountName)
+npx hardhat run scripts/issueCard.js --network localhost -- accounts_test_1
+
+# Block card (cardId)
+npx hardhat run scripts/blockCard.js --network localhost -- 1
+
+# Charge card (cardId amount)
+npx hardhat run scripts/chargeCard.js --network localhost -- 1 0.5
+
+# Apply loan (accountName principalETH interestETH)
+npx hardhat run scripts/applyLoan.js --network localhost -- accounts_test_1 1 0.05
+
+# Approve loan (loanId) — script funds principal (must run as owner)
+npx hardhat run scripts/approveLoan.js --network localhost -- 1
+
+# Repay loan (loanId) — script sends principal+interest
+npx hardhat run scripts/repayLoan.js --network localhost -- 1
+
+# Log audit (accountName action amount)
+npx hardhat run scripts/logAudit.js --network localhost -- accounts_test_1 \"deposit\" 0.01
 
 🛡 Security
 

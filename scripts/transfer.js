@@ -39,16 +39,16 @@
 
 const { getAccountsContract, getAccountId, ethers } = require("./utils");
 
-async function main() {
+async function main(fromName = "accounts_test_1", toName = "accounts_test_2", amount = "0.002") {
     const Accounts = await getAccountsContract();
 
-    const from = getAccountId("accounts_test_1");
-    const to = getAccountId("accounts_test_2");
+    const from = getAccountId(fromName);
+    const to = getAccountId(toName);
 
-    const tx = await Accounts.transfer(from, to, ethers.parseEther("0.002"));
+    const tx = await Accounts.transfer(from, to, ethers.parseEther(amount));
     await tx.wait();
 
-    console.log("Transfer complete");
+    console.log(`Transferred ${amount} ETH from ${fromName} to ${toName}`);
 }
 
-main().catch(console.error);
+main(process.argv[2], process.argv[3], process.argv[4]).catch((e) => { console.error(e); process.exit(1); });

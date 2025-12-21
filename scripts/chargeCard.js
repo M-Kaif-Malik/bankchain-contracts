@@ -1,32 +1,18 @@
-const { getContract, getAccountId } = require("./utils");
-
-async function main(cardId, merchantName = "merchant_account", amount = "1") {
-    const { contract: Cards } = await getContract("Cards", "CARDS_ADDRESS");
-    const merchantId = getAccountId(merchantName);
-
-    const tx = await Cards.chargeCard(cardId, merchantId, ethers.utils.parseEther(amount));
-    await tx.wait();
-
-    console.log(`Card ${cardId} charged ${amount} ETH to merchant ${merchantName}`);
-}
-
-main(process.argv[2], process.argv[3], process.argv[4]).catch((e) => { console.error(e); process.exit(1); });
-
 /*
-// scripts/chargeCard.js
-const { getContract, getAccountId, ethers } = require("./utils");
+const { getCardsContract, ethers } = require("./utils");
 
-async function main(cardId, merchantName = "merchant_test", amount = "0.25") {
-    const { contract: Cards } = await getContract("Cards", "CARDS_ADDRESS");
-    const { contract: Accounts } = await getContract("Accounts", "ACCOUNTS_ADDRESS");
+async function main(cardId, amount = "1") {
+    if (!cardId) {
+        console.error("Usage: node chargeCard.js <cardId> <amount>");
+        process.exit(1);
+    }
 
-    const merchantId = getAccountId(merchantName);
+    const Cards = await getCardsContract();
 
-    const tx = await Cards.chargeCard(cardId, merchantId, ethers.parseEther(amount));
+    const tx = await Cards.chargeCard(cardId, ethers.parseEther(amount));
     await tx.wait();
 
-    console.log(`Charged card ${cardId} ${amount} ETH to merchant ${merchantName}`);
+    console.log(`Card ${cardId} charged ${amount} ETH.`);
 }
 
-main(process.argv[2], process.argv[3], process.argv[4]).catch(e => { console.error(e); process.exit(1); });
-*/
+main(process.argv[2], process.argv[3]).catch((e) => { console.error(e); process.exit(1); });

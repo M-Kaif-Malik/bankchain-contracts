@@ -29,14 +29,14 @@
 
 const { getAccountsContract, getAccountId, ethers } = require("./utils");
 
-async function main() {
+async function main(accountName = "accounts_test_1", amount = "0.005") {
     const Accounts = await getAccountsContract();
-    const id = getAccountId("accounts_test_1");
+    const id = getAccountId(accountName);
 
-    const tx = await Accounts.withdraw(id, ethers.parseEther("0.005"));
+    const tx = await Accounts.withdraw(id, ethers.parseEther(amount));
     await tx.wait();
 
-    console.log("Withdraw complete");
+    console.log(`Withdrew ${amount} ETH from ${accountName}`);
 }
 
-main().catch(console.error);
+main(process.argv[2], process.argv[3]).catch((e) => { console.error(e); process.exit(1); });

@@ -32,14 +32,14 @@ main(process.argv[2], process.argv[3]).catch(e => { console.error(e); process.ex
 
 const { getAccountsContract, getAccountId } = require("./utils");
 
-async function main() {
+async function main(accountName = "accounts_test_1", status = "true") {
     const Accounts = await getAccountsContract();
-    const id = getAccountId("accounts_test_1");
+    const id = getAccountId(accountName);
 
-    const tx = await Accounts.freeze(id, true);
+    const tx = await Accounts.freeze(id, status === "true");
     await tx.wait();
 
-    console.log("Account frozen");
+    console.log(`Account ${accountName} freeze set to ${status}`);
 }
 
-main().catch(console.error);
+main(process.argv[2], process.argv[3]).catch((e) => { console.error(e); process.exit(1); });

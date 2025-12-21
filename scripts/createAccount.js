@@ -16,13 +16,14 @@
 //     process.exit(1);
 // });
 
-const { getAccountsContract, getAccountId, ethers } = require("./utils");
+const { getAccountsContract, getAccountId, getSigner } = require("./utils");
 
-async function main() {
+async function main(accountName = "accounts_test_1", ownerAddress) {
     const Accounts = await getAccountsContract();
-    const id = getAccountId("accounts_test_1");
+    const id = getAccountId(accountName);
 
-    const owner = ACCOUNT_ADDRESS; // the real owner of this account
+    const signer = await getSigner();
+    const owner = ownerAddress || signer.address || (await signer.getAddress());
 
     const tx = await Accounts.createAccount(id, owner);
     await tx.wait();
@@ -30,4 +31,4 @@ async function main() {
     console.log("Account created:", id, "owner:", owner);
 }
 
-main().catch(console.error);
+main(process.argv[2], process.argv[3]).catch((e) => { console.error(e); process.exit(1); });

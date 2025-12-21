@@ -6,34 +6,34 @@ function getAccountId(str) {
     return ethers.encodeBytes32String(str);
 }
 
-// ---------------- CONTRACT GETTERS ----------------
+async function getSigner() {
+    const signers = await ethers.getSigners();
+    return signers[0];
+}
 
+// ---------------- CONTRACT GETTERS (connected to first signer) ----------------
 async function getAccountsContract() {
-    return await ethers.getContractAt(
-        "Accounts",
-        process.env.ACCOUNTS_ADDRESS
-    );
+    const contract = await ethers.getContractAt("Accounts", process.env.ACCOUNTS_ADDRESS);
+    const signer = await getSigner();
+    return contract.connect(signer);
 }
 
 async function getLoansContract() {
-    return await ethers.getContractAt(
-        "Loans",
-        process.env.LOANS_ADDRESS
-    );
+    const contract = await ethers.getContractAt("Loans", process.env.LOANS_ADDRESS);
+    const signer = await getSigner();
+    return contract.connect(signer);
 }
 
 async function getCardsContract() {
-    return await ethers.getContractAt(
-        "Cards",
-        process.env.CARDS_ADDRESS
-    );
+    const contract = await ethers.getContractAt("Cards", process.env.CARDS_ADDRESS);
+    const signer = await getSigner();
+    return contract.connect(signer);
 }
 
 async function getAuditContract() {
-    return await ethers.getContractAt(
-        "Audit",
-        process.env.AUDIT_ADDRESS
-    );
+    const contract = await ethers.getContractAt("Audit", process.env.AUDIT_ADDRESS);
+    const signer = await getSigner();
+    return contract.connect(signer);
 }
 
 module.exports = {
@@ -42,5 +42,6 @@ module.exports = {
     getLoansContract,
     getCardsContract,
     getAuditContract,
+    getSigner,
     ethers
 };
